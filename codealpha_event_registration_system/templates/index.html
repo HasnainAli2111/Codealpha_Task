@@ -1,0 +1,1191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventHub | Event Registration System</title>
+
+<style>
+:root {
+    --primary: #5145e5;
+    --primary-dark: #3730a3;
+    --text: #18233f;
+    --muted: #75809a;
+    --border: #e8eaf2;
+    --bg: #f5f7fc;
+    --white: #ffffff;
+    --green: #15845d;
+    --shadow: 0 8px 30px rgba(34, 45, 90, 0.06);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button, input, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.97);
+}
+
+.navbar {
+    height: 76px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    gap: 20px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    background: #eeedff;
+    color: var(--primary);
+    border-radius: 13px;
+    font-size: 24px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-link {
+    background: transparent;
+    border: none;
+    color: #5d6680;
+    padding: 12px 0;
+    font-size: 14px;
+}
+
+.nav-link.active {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #667085;
+    font-size: 13px;
+}
+
+.avatar {
+    background: #eeedff;
+    color: var(--primary);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+}
+
+.container {
+    max-width: 1450px;
+    margin: auto;
+    padding: 28px 5%;
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 36px 40px;
+    color: white;
+    background: linear-gradient(115deg, #243b63, #5145c7 72%, #7267ee);
+    box-shadow: 0 12px 32px rgba(81, 69, 229, 0.15);
+}
+
+.hero:after {
+    content: "✦";
+    position: absolute;
+    right: 7%;
+    top: 3px;
+    font-size: 150px;
+    color: rgba(255,255,255,0.09);
+    transform: rotate(15deg);
+}
+
+.eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #d7d6ff;
+    font-weight: 700;
+}
+
+.hero h1 {
+    margin: 12px 0;
+    font-size: clamp(27px, 3vw, 40px);
+    letter-spacing: -1px;
+}
+
+.hero p {
+    color: #e2e6ff;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 24px;
+}
+
+.hero-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.hero-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.hero-feature span {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 9px;
+    font-size: 19px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin: 23px 0;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat-number {
+    font-size: 29px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 23px;
+    background: #eeedff;
+}
+
+.stat-card:nth-child(2) .stat-icon {
+    background: #e5f8ef;
+}
+
+.stat-card:nth-child(3) .stat-icon {
+    background: #fff1df;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(290px, 0.9fr);
+    gap: 23px;
+    align-items: start;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 21px 23px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.panel-header h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.panel-header p {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 6px 0 0;
+}
+
+.panel-body {
+    padding: 21px;
+}
+
+.btn {
+    border: none;
+    border-radius: 9px;
+    padding: 11px 15px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.btn-primary {
+    color: white;
+    background: linear-gradient(110deg, #5145e5, #7065ef);
+}
+
+.btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 1px solid #d9d5ff;
+}
+
+.btn-muted {
+    color: #475569;
+    background: #f0f2f8;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.event-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: 0.2s;
+    min-width: 0;
+}
+
+.event-card:hover {
+    box-shadow: 0 9px 25px rgba(37, 45, 90, 0.09);
+    transform: translateY(-2px);
+}
+
+.event-art {
+    height: 112px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 17px;
+    background: linear-gradient(130deg, #e8e8ff, #f2efff);
+}
+
+.event-art .emoji {
+    font-size: 45px;
+}
+
+.event-art .category {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.78);
+    padding: 7px 9px;
+    border-radius: 20px;
+    color: #5548bc;
+    font-weight: 800;
+}
+
+.event-card:nth-child(4n+2) .event-art {
+    background: linear-gradient(130deg, #dcf7ed, #e7fbf5);
+}
+
+.event-card:nth-child(4n+3) .event-art {
+    background: linear-gradient(130deg, #ffeddc, #fff6e9);
+}
+
+.event-card:nth-child(4n+4) .event-art {
+    background: linear-gradient(130deg, #e0efff, #eef5ff);
+}
+
+.event-content {
+    padding: 17px;
+}
+
+.event-content h3 {
+    font-size: 16px;
+    margin: 0 0 13px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.event-meta {
+    color: var(--muted);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 9px 0;
+    overflow-wrap: anywhere;
+}
+
+.event-description {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #667085;
+    min-height: 40px;
+    overflow-wrap: anywhere;
+}
+
+.event-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.event-actions button {
+    flex: 1;
+    padding: 10px 7px;
+    font-size: 11px;
+}
+
+.form-panel .panel-header {
+    background: linear-gradient(110deg, #5145e5, #7065ef);
+    color: white;
+}
+
+.form-panel .panel-header p {
+    color: #e2e0ff;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #39445d;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dfe3ed;
+    background: #fcfcfe;
+    border-radius: 9px;
+    outline: none;
+    font-size: 13px;
+    color: var(--text);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(81,69,229,0.09);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 95px;
+}
+
+.required {
+    color: #e05265;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 35px 12px;
+    color: var(--muted);
+    grid-column: 1 / -1;
+    line-height: 1.7;
+}
+
+.empty-state div {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.footer {
+    text-align: center;
+    padding: 28px 10px 8px;
+    color: #8b93a7;
+    font-size: 12px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    max-width: calc(100% - 40px);
+    padding: 15px 20px;
+    background: #183a31;
+    color: white;
+    border-radius: 11px;
+    box-shadow: var(--shadow);
+    z-index: 30;
+    display: none;
+}
+
+.toast.show {
+    display: block;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 27, 52, 0.62);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 20;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 17px;
+    box-shadow: 0 20px 80px #10183245;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 23px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.close-btn {
+    border: none;
+    background: #f1f2f8;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+    color: #555f78;
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.participant {
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.participant:last-child {
+    border-bottom: none;
+}
+
+.participant span {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+@media (max-width: 850px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-right {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        height: auto;
+        padding: 15px 5%;
+        flex-wrap: wrap;
+    }
+
+    .brand {
+        font-size: 17px;
+    }
+
+    .nav-right {
+        width: 100%;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .nav-link {
+        font-size: 12px;
+    }
+
+    .container {
+        padding-top: 18px;
+    }
+
+    .hero {
+        padding: 27px 22px;
+    }
+
+    .hero:after {
+        font-size: 80px;
+        right: 3%;
+    }
+
+    .hero-features {
+        gap: 13px;
+    }
+
+    .stats {
+        gap: 9px;
+    }
+
+    .stat-card {
+        padding: 12px;
+        display: block;
+    }
+
+    .stat-number {
+        font-size: 23px;
+    }
+
+    .stat-icon {
+        width: 35px;
+        height: 35px;
+        margin-bottom: 10px;
+    }
+
+    .event-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-header,
+    .panel-body {
+        padding: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="brand">
+        <div class="brand-icon">▦</div>
+        <span>EventHub</span>
+    </div>
+
+    <div class="nav-right">
+        <button class="nav-link active" onclick="goHome()">⌂ Home</button>
+        <button class="nav-link" onclick="loadEvents()">▣ My Events</button>
+        <button class="nav-link"
+            onclick="document.getElementById('eventName').focus();
+            document.getElementById('createPanel').scrollIntoView({behavior:'smooth'})">
+            ＋ Create Event
+        </button>
+        <div class="profile">
+            <div class="avatar">G</div>
+            <span>Guest User</span>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+
+    <section class="hero">
+        <div class="eyebrow">Your events, beautifully organized</div>
+        <h1>Discover. Connect. Celebrate.</h1>
+        <p>
+            Create memorable events, bring people together, and manage
+            registrations with one simple platform.
+        </p>
+
+        <div class="hero-features">
+            <div class="hero-feature">
+                <span>▦</span>
+                <div><strong>Create Events</strong><br>
+                <small>Plan your next event</small></div>
+            </div>
+
+            <div class="hero-feature">
+                <span>♙</span>
+                <div><strong>Easy Registration</strong><br>
+                <small>Join events you love</small></div>
+            </div>
+
+            <div class="hero-feature">
+                <span>♧</span>
+                <div><strong>Manage Guests</strong><br>
+                <small>View your participants</small></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Total Events</div>
+                <div class="stat-number" id="totalEvents">0</div>
+            </div>
+            <div class="stat-icon">▦</div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Total Registrations</div>
+                <div class="stat-number" id="totalRegistrations">0</div>
+            </div>
+            <div class="stat-icon">♙</div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Platform Status</div>
+                <div class="stat-number" style="font-size:20px;color:#15845d">
+                    Active
+                </div>
+            </div>
+            <div class="stat-icon">✓</div>
+        </div>
+    </section>
+
+    <section class="main-grid">
+
+        <div class="panel" id="eventsPanel">
+            <div class="panel-header">
+                <div>
+                    <h2>Explore Events</h2>
+                    <p>Find an event and reserve your place.</p>
+                </div>
+                <button class="btn btn-outline" onclick="loadEvents()">
+                    ↻ Refresh
+                </button>
+            </div>
+
+            <div class="panel-body">
+                <div class="event-grid" id="eventsList">
+                    <div class="empty-state">Loading events...</div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="panel form-panel" id="createPanel">
+            <div class="panel-header">
+                <div>
+                    <h2>＋ Create New Event</h2>
+                    <p>Share something worth attending.</p>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <form id="eventForm">
+
+                    <div class="form-group">
+                        <label for="eventName">
+                            Event Name <span class="required">*</span>
+                        </label>
+                        <input id="eventName" maxlength="150"
+                            placeholder="e.g. Web Development Workshop" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDate">
+                            Event Date <span class="required">*</span>
+                        </label>
+                        <input id="eventDate" type="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventLocation">
+                            Location <span class="required">*</span>
+                        </label>
+                        <input id="eventLocation" maxlength="200"
+                            placeholder="e.g. Main Auditorium" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" maxlength="1000"
+                            placeholder="What will attendees experience?"></textarea>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" type="submit">
+                        Create Event&nbsp; →
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+    </section>
+
+    <footer class="footer">
+        EventHub · Event Registration System · Built with Python, Flask & SQLite
+    </footer>
+
+</main>
+
+<div class="modal" id="registerModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Register for Event</h2>
+            <button class="close-btn" onclick="closeModal('registerModal')"
+                aria-label="Close">×</button>
+        </div>
+
+        <div class="modal-body">
+            <p id="registerEventName" style="font-weight:700"></p>
+            <p id="registerEventInfo"
+                style="font-size:13px;color:#75809a"></p>
+
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="participantName">Full Name *</label>
+                    <input id="participantName" maxlength="150"
+                        placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="participantEmail">Email Address *</label>
+                    <input id="participantEmail" type="email" maxlength="254"
+                        placeholder="you@example.com" required>
+                </div>
+
+                <button class="btn btn-primary btn-block" type="submit">
+                    Confirm Registration
+                </button>
+                <button class="btn btn-muted btn-block" type="button"
+                    onclick="closeModal('registerModal')">
+                    Cancel
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="participantsModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Registered Participants</h2>
+            <button class="close-btn"
+                onclick="closeModal('participantsModal')"
+                aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+            <p id="participantsEventName" style="font-weight:700"></p>
+            <div id="participantsList"></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+let selectedEventId = null;
+let toastTimer;
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3500);
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove("open");
+}
+
+function goHome() {
+    document.getElementById("eventsPanel").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function openModal(id) {
+    document.getElementById(id).classList.add("open");
+}
+
+document.querySelectorAll(".modal").forEach(modal => {
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            modal.classList.remove("open");
+        }
+    });
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        document.querySelectorAll(".modal").forEach(modal => {
+            modal.classList.remove("open");
+        });
+    }
+});
+
+function getCategory(name) {
+    const text = name.toLowerCase();
+
+    if (text.includes("code") || text.includes("program")
+        || text.includes("web") || text.includes("software")) {
+        return {emoji: "💻", label: "Technology"};
+    }
+
+    if (text.includes("design") || text.includes("art")) {
+        return {emoji: "🎨", label: "Creative"};
+    }
+
+    if (text.includes("sport") || text.includes("fitness")
+        || text.includes("health")) {
+        return {emoji: "🏆", label: "Lifestyle"};
+    }
+
+    if (text.includes("music") || text.includes("concert")) {
+        return {emoji: "🎵", label: "Entertainment"};
+    }
+
+    return {emoji: "✨", label: "Community"};
+}
+
+async function loadEvents() {
+    const list = document.getElementById("eventsList");
+    list.replaceChildren();
+
+    const loading = document.createElement("div");
+    loading.className = "empty-state";
+    loading.textContent = "Loading events...";
+    list.appendChild(loading);
+
+    try {
+        const response = await fetch("/events");
+
+        if (!response.ok) {
+            throw new Error("Unable to load events");
+        }
+
+        const events = await response.json();
+
+        document.getElementById("totalEvents").textContent = events.length;
+
+        if (events.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+
+            const icon = document.createElement("div");
+            icon.textContent = "📅";
+
+            const title = document.createElement("strong");
+            title.textContent = "No events yet";
+
+            const text = document.createElement("p");
+            text.textContent =
+                "Create your first event using the form on the right.";
+
+            empty.append(icon, title, text);
+            list.replaceChildren(empty);
+            document.getElementById("totalRegistrations").textContent = "0";
+            return;
+        }
+
+        let registrationCount = 0;
+
+        for (const event of events) {
+            const response = await fetch(
+                "/events/" + event.id + "/registrations"
+            );
+
+            if (response.ok) {
+                const registrations = await response.json();
+                registrationCount += registrations.length;
+            }
+        }
+
+        document.getElementById("totalRegistrations").textContent =
+            registrationCount;
+
+        list.replaceChildren();
+
+        events.forEach(event => {
+            const category = getCategory(event.name);
+
+            const card = document.createElement("article");
+            card.className = "event-card";
+
+            const art = document.createElement("div");
+            art.className = "event-art";
+
+            const emoji = document.createElement("span");
+            emoji.className = "emoji";
+            emoji.textContent = category.emoji;
+
+            const badge = document.createElement("span");
+            badge.className = "category";
+            badge.textContent = category.label;
+
+            art.append(emoji, badge);
+
+            const content = document.createElement("div");
+            content.className = "event-content";
+
+            const title = document.createElement("h3");
+            title.textContent = event.name;
+
+            const date = document.createElement("div");
+            date.className = "event-meta";
+            date.textContent = "▦  " + event.date;
+
+            const location = document.createElement("div");
+            location.className = "event-meta";
+            location.textContent = "⌖  " + event.location;
+
+            const description = document.createElement("p");
+            description.className = "event-description";
+            description.textContent =
+                event.description || "Join us for this exciting event.";
+
+            const actions = document.createElement("div");
+            actions.className = "event-actions";
+
+            const registerButton = document.createElement("button");
+            registerButton.className = "btn btn-primary";
+            registerButton.textContent = "Register →";
+            registerButton.onclick = () => openRegistration(event);
+
+            const guestsButton = document.createElement("button");
+            guestsButton.className = "btn btn-outline";
+            guestsButton.textContent = "Guests";
+            guestsButton.onclick = () => viewRegistrations(event);
+
+            actions.append(registerButton, guestsButton);
+            content.append(title, date, location, description, actions);
+            card.append(art, content);
+            list.appendChild(card);
+        });
+
+    } catch (error) {
+        list.replaceChildren();
+
+        const message = document.createElement("div");
+        message.className = "empty-state";
+        message.textContent =
+            "Could not load events. Make sure the Flask server is running.";
+
+        list.appendChild(message);
+    }
+}
+
+document.getElementById("eventForm").addEventListener("submit",
+    async function(event) {
+        event.preventDefault();
+
+        const data = {
+            name: document.getElementById("eventName").value.trim(),
+            date: document.getElementById("eventDate").value,
+            location: document.getElementById("eventLocation").value.trim(),
+            description:
+                document.getElementById("eventDescription").value.trim()
+        };
+
+        if (!data.name || !data.date || !data.location) {
+            showToast("Please complete all required fields.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/events", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                showToast(result.error || "Unable to create event.");
+                return;
+            }
+
+            this.reset();
+            showToast("Your event has been created successfully!");
+            await loadEvents();
+
+        } catch (error) {
+            showToast("Could not connect to the server.");
+        }
+    });
+
+function openRegistration(event) {
+    selectedEventId = event.id;
+
+    document.getElementById("registerEventName").textContent = event.name;
+    document.getElementById("registerEventInfo").textContent =
+        event.date + " · " + event.location;
+
+    document.getElementById("registrationForm").reset();
+    openModal("registerModal");
+}
+
+document.getElementById("registrationForm").addEventListener("submit",
+    async function(event) {
+        event.preventDefault();
+
+        if (!selectedEventId) {
+            showToast("Please select an event first.");
+            return;
+        }
+
+        const data = {
+            participant_name:
+                document.getElementById("participantName").value.trim(),
+            email:
+                document.getElementById("participantEmail").value.trim()
+        };
+
+        try {
+            const response = await fetch(
+                "/events/" + selectedEventId + "/register", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                showToast(result.error || "Registration failed.");
+                return;
+            }
+
+            closeModal("registerModal");
+            showToast("Registration completed successfully!");
+            await loadEvents();
+
+        } catch (error) {
+            showToast("Could not connect to the server.");
+        }
+    });
+
+async function viewRegistrations(event) {
+    const list = document.getElementById("participantsList");
+    list.replaceChildren();
+
+    document.getElementById("participantsEventName").textContent =
+        event.name;
+
+    const loading = document.createElement("p");
+    loading.textContent = "Loading participants...";
+    list.appendChild(loading);
+
+    openModal("participantsModal");
+
+    try {
+        const response = await fetch(
+            "/events/" + event.id + "/registrations"
+        );
+
+        const registrations = await response.json();
+
+        if (!response.ok) {
+            throw new Error("Unable to load participants");
+        }
+
+        list.replaceChildren();
+
+        if (registrations.length === 0) {
+            const empty = document.createElement("p");
+            empty.textContent = "No registrations for this event yet.";
+            empty.style.color = "#75809a";
+            list.appendChild(empty);
+            return;
+        }
+
+        registrations.forEach((person, index) => {
+            const row = document.createElement("div");
+            row.className = "participant";
+
+            const name = document.createElement("strong");
+            name.textContent = (index + 1) + ". " +
+                person.participant_name;
+
+            const email = document.createElement("span");
+            email.textContent = person.email;
+
+            row.append(name, email);
+            list.appendChild(row);
+        });
+
+    } catch (error) {
+        list.replaceChildren();
+
+        const message = document.createElement("p");
+        message.textContent = "Could not load participants.";
+        list.appendChild(message);
+    }
+}
+
+loadEvents();
+</script>
+
+</body>
+</html>
